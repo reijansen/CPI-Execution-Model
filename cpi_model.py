@@ -92,7 +92,7 @@ class CPIexecution:
             m1 = float(self.miss_rate.get('L1', 0.0))
             m2 = float(self.miss_rate.get('L2', 0.0))
             h2 = float(self.percent.get('h2', 1.0 - m2))
-            T2 = max(0.0, float(self.stall_cycle.get('L2_access', 0.0)) - 1.0)
+            T2 = float(self.stall_cycle.get('L2_access', 0.0))
             memstall = m1 * (h2 * T2 + m2 * M)
         else:
             memstall = 0.0
