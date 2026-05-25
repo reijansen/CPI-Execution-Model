@@ -62,7 +62,7 @@ def run_tests():
 
         if penalty == 200.0:
             cpi.miss_penalty = penalty
-            cpi.two_level(miss_rate=0.4, stall_cycle=4.0)
+            cpi.two_level(miss_rate=0.4, stall_cycle=3.0)
             print_summary(f"Two-Level Cache (L1 + L2)", cpi)
 
     print("\n" + "="*70)
