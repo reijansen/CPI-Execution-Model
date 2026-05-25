@@ -51,8 +51,11 @@ class CPIexecution:
         return 1.0 + load + store
 
     def stallCPI(self):
-        """Compute and return CPI stall value."""
-        return self.getMAPI() * self.stallMem()
+        """Print cache type and memory stall, return CPI stall value."""
+        memstall = self.stallMem()
+        print(f"{'cache type':<20}: {self.typ}")
+        print(f"{'memory stall':<20}: {memstall:.4f}")
+        return self.getMAPI() * memstall
 
     def stallMem(self):
         """Calculate and return memstall per memory access for current cache type."""
