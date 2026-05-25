@@ -50,8 +50,15 @@ class CPIexecution:
         load, store = self._load_store()
         return 1.0 + load + store
 
-    def _calculate_memstall_by_type(self, print_formula=False):
-        """Calculate memstall per memory access for current cache type."""
+    def stallCPI(self):
+        """Display cache type and memory stall, return CPI stall value."""
+        print(f"cache type: {self.typ}")
+        memstall = self.stallMem(print_formula=True)
+        print(f"memory stall: {memstall}")
+        return self.getMAPI() * memstall
+
+    def stallMem(self, print_formula=False):
+        """Calculate and return memstall per memory access for current cache type."""
         M = float(self.miss_penalty)
         load, store = self._load_store()
         mapi = self.getMAPI()
@@ -103,17 +110,6 @@ class CPIexecution:
             memstall = 0.0
 
         return memstall
-
-    def stallCPI(self):
-        """Display cache type and memory stall, return CPI stall value."""
-        print(f"cache type: {self.typ}")
-        memstall = self._calculate_memstall_by_type(print_formula=True)
-        print(f"memory stall: {memstall}")
-        return self.getMAPI() * memstall
-
-    def stallMem(self):
-        """Return memstall per memory access."""
-        return self._calculate_memstall_by_type(print_formula=False)
 
     def speedup(self, exec_cpi="ideal"):
         """Compute speedup vs ideal CPI or other cache configuration."""
