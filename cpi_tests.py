@@ -45,7 +45,7 @@ def run_tests():
             print_summary(f"Unified Cache", cpi)
 
             cpi.miss_penalty = penalty
-            cpi.separate(inst_miss_rate=0.05, data_miss_rate=0.09, load=0.2, store=0.3)
+            cpi.separate(inst_miss_rate=0.05, data_miss_rate=0.10, load=0.2, store=0.25)
             print_summary(f"Separate I/D Cache", cpi)
 
         if penalty == 150.0:
