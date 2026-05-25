@@ -51,13 +51,10 @@ class CPIexecution:
         return 1.0 + load + store
 
     def stallCPI(self):
-        """Display cache type and memory stall, return CPI stall value."""
-        print(f"cache type: {self.typ}")
-        memstall = self.stallMem(print_formula=True)
-        print(f"memory stall: {memstall}")
-        return self.getMAPI() * memstall
+        """Compute and return CPI stall value."""
+        return self.getMAPI() * self.stallMem()
 
-    def stallMem(self, print_formula=False):
+    def stallMem(self):
         """Calculate and return memstall per memory access for current cache type."""
         M = float(self.miss_penalty)
         load, store = self._load_store()
@@ -65,38 +62,28 @@ class CPIexecution:
 
         if self.typ == "no cache":
             memstall = 1.0 * M
-            if print_formula:
-                print(f"cpi_stall = {mapi} * 1 * {M} = {mapi * memstall}")
 
         elif self.typ == "unified":
             m1 = float(self.miss_rate.get('L1', 0.0))
             memstall = m1 * M
-            if print_formula:
-                print(f"cpi_stall = {mapi} * {m1} * {M} = {mapi * memstall}")
 
         elif self.typ == "separate":
             Im1 = float(self.miss_rate.get('instruction', 0.0))
             Dm1 = float(self.miss_rate.get('data', 0.0))
             pct_inst, pct_data = 1.0 / mapi, (load + store) / mapi
             memstall = (pct_inst * Im1 + pct_data * Dm1) * M
-            if print_formula:
-                print(f"cpi_stall = {mapi} * ({pct_inst} * {Im1} + {pct_data} * {Dm1}) * {M} = {mapi * memstall}")
 
         elif self.typ == "write through":
             m1 = float(self.miss_rate.get('L1', 0.0))
             elim = float(self.percent.get('elim_frac', 0.0))
             pct_read, pct_write = (1.0 + load) / mapi, store / mapi
             memstall = (pct_read * m1 + pct_write * (1.0 - elim)) * M
-            if print_formula:
-                print(f"cpi_stall = {mapi} * ({pct_read} * {m1} + {pct_write} * {1.0 - elim}) * {M} = {mapi * memstall}")
 
         elif self.typ == "write back":
             m1 = float(self.miss_rate.get('L1', 0.0))
             dirty = float(self.percent.get("dirty_frac", 0.2))
             clean = 1.0 - dirty
             memstall = m1 * (clean + 2.0 * dirty) * M
-            if print_formula:
-                print(f"cpi_stall = {mapi} * {m1} * ({clean} + 2*{dirty}) * {M} = {mapi * memstall}")
 
         elif self.typ == "two level":
             m1 = float(self.miss_rate.get('L1', 0.0))
@@ -104,8 +91,6 @@ class CPIexecution:
             h2 = float(self.percent.get('h2', 1.0 - m2))
             T2 = max(0.0, float(self.stall_cycle.get('L2_access', 0.0)) - 1.0)
             memstall = m1 * (h2 * T2 + m2 * M)
-            if print_formula:
-                print(f"cpi_stall = {mapi} * {m1} * ({h2}*{T2} + {m2}*{M}) = {mapi * memstall}")
         else:
             memstall = 0.0
 
